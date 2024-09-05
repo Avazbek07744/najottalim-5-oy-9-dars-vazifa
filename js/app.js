@@ -1,34 +1,57 @@
-const Data = JSON.parse(localStorage.getItem("data")) || [];
+const form = document.querySelector('#Form');
+const name = document.querySelector('#name');
+const email = document.querySelector('#email');
+const age = document.querySelector('#age');
+const desc = document.querySelector('#desc');
+const btn = document.querySelector('button');
+const ui = document.querySelector('#ui');
 
 
-uiChanger(Data);
-Form.onsubmit = (event) => {
-    event.preventDefault();
-    if (!username.value || !age.value || !email.value) {
-        alert("Ma'lumotlarni to'liq to'ldiring");
-    } else {
-        const data = {
-            username: username.value,
-            age: age.value,
-            email: email.value,
-        };
-        Data.push(data);
-        localStorage.setItem("data", JSON.stringify(Data));
-        uiChanger(Data);
-        Form.reset();
+
+function validate() {
+    if (!name.value.trim()) {
+        alert("Ism kiritilishi shart.");
+        return false;
     }
-};
 
-function uiChanger(Data) {
-    ui.innerHTML = null;
-    if (Data.length === 0) ui.innerHTML = `<h3>Ma'lumot mavjud emas</h3>`;
-    Data.forEach((element) => {
-        const card = `<div class="div1">
-        <h3>${element.username}</h3>
-        <span>${element.age}</span>
-        <mark>${element.email}</mark>
-        </div>
-        `;
-        ui.innerHTML += card;
-    });
+    if (name.value.trim().length < 3) {
+        alert("Ismingiz kamida uchta harfdan iborat bo'lishi kerak.");
+        return false;
+    }
+
+    if (!age.value.trim() || isNaN(age.value)) {
+        alert("Iltimos, yaroqli yosh kiriting.");
+        return false;
+    }
+
+    const emailP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.value.trim() || !emailP.test(email.value)) {
+        alert("Iltimos, yaroqli elektron pochta kiriting.");
+        return false;
+    }
+
+    if (!desc.value.trim()) {
+        alert("Tavsif kiritilishi shart.");
+        return false;
+    }
+
+    return true;
 }
+
+btn.addEventListener('click', function (event) {
+    event.preventDefault();
+
+    if (validate()) {
+        let result = `
+        <div class="div1">
+            <h3>${name.value}</h3>
+            <h4>${age.value}</h4>
+            <span>${email.value}</span>
+            <p>${desc.value}</p>
+        </div>
+    `;
+
+        ui.innerHTML += result;
+        form.reset();
+    }
+});
